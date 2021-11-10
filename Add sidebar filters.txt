@@ -1,0 +1,79 @@
+https://www.youtube.com/watch?v=mHY_BmNwTBU
+
+---------------------------------------------------------------
+Product template file add schema
+
+"blocks" : [
+	{
+		"type" : "text",
+		"name" : "filter tags",
+		"settings" : [
+		  {
+			"type" : "text",
+			"id" : "filter_heading",
+			"label" : "Heading"
+		  },
+		  {
+			"type" : "textarea",
+			"id" : "filter_tags",
+			"label" : "Tags"
+		  }
+		]
+	  }
+	]
+  }
+{% endschema %}
+----------------------------------------------------------------------
+
+create liquid file sidebar-filter.liquid
+
+{% for block in section.block %}
+ {%assign heading = block.settings.filter_heading %}
+ {% assign tags = block.settings.filter_tags | split: ',' %}
+ <h4> {{heading}} </h4>
+ {% for tag in tags %}
+	{% if current_tags contains tag %}
+		<li class="active">
+          {{ tag | link_to_remove_tag : tag }}
+		</li>
+	{% else %}
+		<li>
+		  {{ tag | link_to_add_tag : tag }}
+		</li>
+	{% endif %}
+  {% endfor %}
+{% endfor %}
+--------------------------------------------------------------------------
+
+
+if you want to aded filter with checkbox then use below code
+{% for block in section.blocks %}
+ {%assign heading = block.settings.filter_heading %}
+ {% assign tags = block.settings.filter_tags | split: ',' %}
+ <br><h4> {{heading}} </h4>
+ {% for tag in tags %}
+	{% if current_tags contains tag %}
+		<li class="active">
+          <label>
+          <input class="filter_checkbox coll-filter" id="checked" type="checkbox" checked onClick="">
+          {{ tag | link_to_remove_tag : tag }}
+          </label>
+		</li>
+	{% else %}
+		<li>
+          <label>
+          <input class="filter_checkbox coll-filter" id="checked" type="checkbox" onClick="">        
+          {{ tag | link_to_add_tag : tag }}
+          </label>
+</li>
+	{% endif %}
+  {% endfor %}
+{% endfor %}
+
+
+------------- Add Following in Theme.js file ------------
+
+$('.filter_checkbox').off().change( function(){
+var newURL = $(this).nextAll('a').attr('href');
+window.location.href = newURL;
+});
